@@ -6,7 +6,7 @@ import Register from "./pages/Register";
 
 function App() {
 	return (
-		<div className="App">
+		<div class="App">
 			<Routes>
 				<Route path="/" element={<Home />} />
 				<Route path="/login" element={<Login />} />

@@ -19,13 +19,18 @@ export const getBooks = createAsyncThunk(
 
 const initialState = {
 	entities: [],
+	book: [],
 	loading: false,
 };
 
 const bookSlice = createSlice({
 	name: "book",
 	initialState,
-	reducers: {},
+	reducers: {
+		filter: (state, action) => {
+			state.entities = action.payload;
+		},
+	},
 	extraReducers: {
 		[getBooks.pending]: (state, { payload }) => {
 			state.loading = true;
@@ -33,7 +38,6 @@ const bookSlice = createSlice({
 		[getBooks.fulfilled]: (state, { payload }) => {
 			state.loading = false;
 			state.entities = payload;
-			console.log(current(state));
 		},
 		[getBooks.rejected]: (state, { payload }) => {
 			state.loading = false;
@@ -43,3 +47,4 @@ const bookSlice = createSlice({
 });
 
 export default bookSlice.reducer;
+export const { filter } = bookSlice.actions;

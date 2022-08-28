@@ -1,17 +1,19 @@
 import React from "react";
 
 const BookItem = ({ book }) => {
-	console.log(book);
 	return (
-		<div class="card w-72 bg-base-100 shadow-xl">
+		<div class="card w-96 bg-base-100 shadow-2xl">
 			<figure>
-				<img src="https://placeimg.com/400/225/arch" alt="Shoes" />
+				<img src={book.volumeInfo.imageLinks.thumbnail} alt="Shoes" />
 			</figure>
 			<div class="card-body">
-				<h2 class="card-title">Shoes!</h2>
-				<p>If a dog chews shoes whose shoes does he choose?</p>
+				<h2 class="card-title">
+					<a href={book.volumeInfo.infoLink}>{book.volumeInfo.title}</a>
+				</h2>
+				<p>{book.volumeInfo.description?.substring(0, 200) + ". . ."}</p>
 				<div class="card-actions justify-end">
-					<button class="btn btn-primary">Buy Now</button>
+					<button class="btn btn-primary">Detail</button>
+					<button class="btn btn-primary">Link</button>
 				</div>
 			</div>
 		</div>

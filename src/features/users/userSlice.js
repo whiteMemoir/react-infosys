@@ -2,6 +2,7 @@ import { createSlice, current, nanoid } from "@reduxjs/toolkit";
 
 const initialState = {
 	user: [],
+	token: null,
 };
 
 const userSlice = createSlice({
@@ -9,13 +10,13 @@ const userSlice = createSlice({
 	initialState,
 	reducers: {
 		register: (state, action) => {
-			state.user.push(action.payload);
+			state.user.push({ id: nanoid(), ...action.payload });
 		},
 		login: (state, action) => {
-			state.user.push({ ...action.payload, token: nanoid() });
+			state.token = action.payload;
 		},
 		logout: () => {
-			return null;
+			return initialState;
 		},
 	},
 });

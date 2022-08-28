@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux/es/exports";
 import { register } from "../features/users/userSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const [localData, setLocalData] = useState(null);
+	const [token, setToken] = useState(null);
 	const [registerData, setRegisterData] = useState({
 		nama: "",
 		email: "",
@@ -21,6 +23,14 @@ const Register = () => {
 		password: "",
 		confirm_password: "",
 	});
+
+	useEffect(() => {
+		const data = JSON.parse(localStorage.getItem("persist:root"));
+		if (data) {
+			setLocalData(JSON.parse(data.user));
+			setToken(JSON.parse(data.token));
+		}
+	}, []);
 
 	const handleChange = (e) => {
 		const { name, value, checked, type } = e.target;
@@ -43,6 +53,7 @@ const Register = () => {
 			delete registerData.confirm_password;
 			dispatch(register(registerData));
 			navigate("/login");
+			navigate(0);
 		}
 	};
 
@@ -183,71 +194,158 @@ const Register = () => {
 		return isValid;
 	};
 
-	return (
-		<div>
-			<h1>Register</h1>
-			<form className="register-form" onSubmit={handleSubmit}>
-				<label htmlFor="nama">Nama Lengkap</label>
-				<input
-					onChange={handleChange}
-					type="text"
-					name="nama"
-					id="nama"
-					value={registerData.nama}
-				/>
-				<p>{errorMsg.nama}</p>
-				<label htmlFor="email">Email</label>
-				<input
-					onChange={handleChange}
-					type="email"
-					name="email"
-					id="email"
-					value={registerData.email}
-				/>
-				<p>{errorMsg.email}</p>
-				<label htmlFor="gender">Jenis Kelamin</label>
-				<label htmlFor="laki">Laki-laki</label>
-				<input
-					onChange={handleChange}
-					type="radio"
-					name="gender"
-					value="laki-laki"
-					id="laki"
-				/>
-				<label htmlFor="perempuan">Perempuan</label>
-				<input
-					onChange={handleChange}
-					type="radio"
-					name="gender"
-					value="perempuan"
-					id="perempuan"
-				/>
-				<p>{errorMsg.gender}</p>
-				<label htmlFor="">Buat Password</label>
-				<input
-					onChange={handleChange}
-					type={showPassword ? "text" : "password"}
-					name="password"
-					id="password"
-					value={registerData.password}
-				/>
-				<span onClick={() => setShowPassword((prev) => (prev ? false : true))}>
-					<small>Lihat Password</small>
-				</span>
-				<p>{errorMsg.password}</p>
-				<label htmlFor="confirm_password">Konfirmasi Password</label>
-				<input
-					onChange={handleChange}
-					type="password"
-					name="confirm_password"
-					id="confirm_password"
-					value={confirmPassword}
-				/>
-				<p>{errorMsg.confirm_password}</p>
-				<button>Daftar</button>
-			</form>
-		</div>
-	);
+	const userCheck = () => {
+		let isLogin = true;
+		const findUser = localData?.find((user) => user.id === token);
+		if (!findUser) {
+			isLogin = false;
+		}
+		return isLogin;
+	};
+
+	if (userCheck()) {
+		navigate("/");
+	} else {
+		return (
+			<div className="mx-auto my-8">
+				<div className="text-center mb-6">
+					<h1 className="text-xl font-bold">Register</h1>
+				</div>
+				<form
+					class="register-form mx-auto w-full max-w-sm bg-gray-800 rounded-lg border border-gray-200 shadow-md p-5"
+					onSubmit={handleSubmit}
+				>
+					<div className="form-input mb-6">
+						<label
+							className="block mb-2 text-sm font-medium text-gray-200"
+							htmlFor="nama"
+						>
+							Nama Lengkap
+						</label>
+						<input
+							onChange={handleChange}
+							type="text"
+							name="nama"
+							id="nama"
+							value={registerData.nama}
+							class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+						/>
+						<p>{errorMsg.nama}</p>
+					</div>
+
+					<div className="form-input mb-6">
+						<label
+							className="block mb-2 text-sm font-medium text-gray-200 "
+							htmlFor="email"
+						>
+							Email
+						</label>
+						<input
+							onChange={handleChange}
+							type="email"
+							name="email"
+							id="email"
+							value={registerData.email}
+							class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
+						/>
+						<p>{errorMsg.email}</p>
+					</div>
+
+					<div className="form-input flex items-start">
+						<label
+							className="block mb-2 text-sm font-medium text-gray-200 "
+							htmlFor="gender"
+						>
+							Jenis Kelamin
+						</label>
+						<input
+							onChange={handleChange}
+							type="radio"
+							name="gender"
+							value="laki-laki"
+							id="laki"
+							className="ml-4 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  "
+						/>
+						<label
+							className="ml-2 text-sm font-medium text-gray-200 "
+							htmlFor="laki"
+						>
+							Laki-laki
+						</label>
+						<input
+							onChange={handleChange}
+							type="radio"
+							name="gender"
+							value="perempuan"
+							id="perempuan"
+							className="ml-10 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  "
+						/>
+						<label
+							className="ml-2 text-sm font-medium text-gray-200 "
+							htmlFor="perempuan"
+						>
+							Perempuan
+						</label>
+					</div>
+					<p className="mb-6">{errorMsg.gender}</p>
+
+					<div className="form-input mb-6">
+						<label
+							className="block mb-2 text-sm font-medium text-gray-200 "
+							htmlFor=""
+						>
+							Buat Password
+						</label>
+						<input
+							onChange={handleChange}
+							type={showPassword ? "text" : "password"}
+							name="password"
+							id="password"
+							value={registerData.password}
+							class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
+						/>
+						<span
+							className="text-blue-500"
+							onClick={() => setShowPassword((prev) => (prev ? false : true))}
+						>
+							<small>Lihat Password</small>
+						</span>
+						<p>{errorMsg.password}</p>
+					</div>
+
+					<div className="form-input mb-6">
+						<label
+							className="block mb-2 text-sm font-medium text-gray-200 "
+							htmlFor="confirm_password"
+						>
+							Konfirmasi Password
+						</label>
+						<input
+							onChange={handleChange}
+							type="password"
+							name="confirm_password"
+							id="confirm_password"
+							value={confirmPassword}
+							class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
+						/>
+						<p>{errorMsg.confirm_password}</p>
+					</div>
+
+					<div className="flex justify-between items-end">
+						<button
+							type="submit"
+							class="bg-blue-600 text-gray-200 hover:bg-blue-400 px-4 py-2 rounded-lg"
+						>
+							Daftar
+						</button>
+						<span className="text-right text-blue-500 underline">
+							<Link to="/login">Sudah punya akun?</Link>
+						</span>
+					</div>
+				</form>
+			</div>
+		);
+	}
 };
 
 export default Register;
