@@ -8,7 +8,7 @@ This app built to display the items from https://www.googleapis.com/books/v1/vol
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone [https://link-to-project](https://github.com/whiteMemoir/react-infosys.git)
 ```
 
 Go to the project directory
